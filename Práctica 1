@@ -1,0 +1,23 @@
+#Ejercicio 1----------------------------------------------------------------------
+temporal <- tempfile() #Nombrar archivo
+download.file("http://www.beta.inegi.org.mx/contenidos/proyectos/
+              enchogares/regulares/enoe/microdatos/enoe_15ymas/2016
+              /2016trim1_dbf.zip",temporal) #Descargar archivo
+files = unzip(temporal, list=TRUE)$Name #Descomprimir y nombrar 
+unzip(temporal, files=files[grepl("dbf", files)]) 
+install.packages("foreign") #Comando para instalar paqueterias
+require (foreign) #Comando para llamar una paqueteria
+SDEMT116 <- data.frame(read.dbf("sdemt116.dbf")) #Tabla
+View (SDEMT116)
+#Ejercicio 2----------------------------------------------------------------------
+nombres <- c("Sergio", "Carlos", "Paula") #Vector 
+edad <- c(23, 43, 51) #Otro vec
+base1<- data.frame(nombres, edad) #Crear una estructura de datos
+#Usar flechita /// La c es para concatenar 
+#Se pueden hacer operaciones e ir corriendo con ctrl r
+table(SDEMT116$SEX) #Aqui podemos saber cuantos H o M hay //el $ me ayuda para la columna 
+table(SDEMT116$ENT) #Lo mismo pero la entidad federativa de México
+install.packages("questionr") #Bajamos de internet la libreria
+require(questionr) #Mandamos llamar la libreria a mi sesion de R
+wtd.table (SDEMT116$SEX, weights = SDEMT116$FAC) 
+#Despues de poner una funcion en R se tiene que abrir () y despues del #cuando se corre no toma en cuenta el comentario
