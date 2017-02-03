@@ -1,0 +1,25 @@
+#Ejercicio 3---------------------------------------------------------------------
+
+table (SDEMT116$R_DEF)
+table(SDEMT116$CLASE2)
+
+#Volvimos a llamar la libreria "questionr" para habilitar el wtd.table
+wtd.table(SDEMT116$CLASE2, weights = SDEMT116$FAC) 
+          #2149567 ... #Desempleados en México en el 2016 (ENOE)
+
+#Filtrar Casos en otras bases con datos de la base original
+  # El "&" sirve como "y" para tomar dos entidades o categorias de una v.a
+AGS16 <- subset (SDEMT116, SDEMT116$ENT == "01") 
+AGSyOtr16 <- subset (SDEMT116, SDEMT116$ENT == "01" & SDEMT116$ENT == "02") 
+table (SDEMT116$ENT)
+
+#Ejercicio 4-------------------------------------------------------------------
+data("AirPassengers") #Base de Datos precargada
+class (AirPassengers) #Que clase de ST es
+start(AirPassengers) #Nos dice cuando inicia (año) la St
+end(AirPassengers) #Cuando termina la St
+frequency(AirPassengers) #Frecuencia, nos salio de 12 (mensual)
+summary(AirPassengers) #Resumen de forma descriptiva
+plot(AirPassengers) #Grafica, se ve que hay una TENDENCIA a la alta y ESTACIONALIDAD (picos)
+
+#Tarea 1 Bajar una st 
