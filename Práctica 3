@@ -1,0 +1,30 @@
+#Práctica 3---------------------------------------------
+#Generando un objeto, datos aleatorios poblacion
+pob <-sample(100:120, 15,replace = F) 
+
+#Tiene 3 argumentos 1-Genere datos rango 2-# datos 3-No haga reemplazo (F de False)
+
+#Convertir a ST
+pobts <- ts(pob, frequency = 1, start = (2000)) #ts es de time series e inicia en el año 2000
+end (pobts) #Cuando termina la base de datos
+plot (aggregate(pobts)) #Grafica 
+
+
+#Bajar del INEGI 
+#Importar archivo formato csv , xls
+infor <- ts(read.csv(("C:\\Users\\salaD-20\\Downloads\\IndicadoresENOE_2017-02-08.xls"), header = T), frequency = 4, start = 2005) #Poner una \
+
+# 4 St en una misma hoja 
+#(10.2, 10.3, 10.5, 10.7) http://www3.inegi.org.mx/Sistemas/infoenoe/Default_15mas.aspx?s=est&c=27736
+ceu <-(read.csv(("C:\\Users\\salaD-20\\Downloads\\2.csv")))
+ceust<- ts(ceu, frequency = 4, start = 2005)       #, frequency = 4, start = 2005)
+
+#Solo tomar los datos de una columna o renglon
+desocu <- ts(ceust [,1], start = 2005, frequency = 4, end = 2014) #Con [,indica columna] [indica renglon,]
+desocu
+
+#Declarar 3 series de tiempo de la matriz ceust
+#La st deben ser de la tasa de ocupacion parcial (10.3), Trabajo Asalariado (10.5) y T. de condiciones criticas (10.7)
+ocuparc <- ts(ceust [,2], start = 2005, frequency = 4, end = 2014)
+trasala <- ts(ceust [,3], start = 2005, frequency = 4, end = 2014)
+condcri <- ts(ceust [,4], start = 2005, frequency = 4, end = 2014)
