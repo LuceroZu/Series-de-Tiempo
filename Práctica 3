@@ -28,3 +28,5 @@ desocu
 ocuparc <- ts(ceust [,2], start = 2005, frequency = 4, end = 2014)
 trasala <- ts(ceust [,3], start = 2005, frequency = 4, end = 2014)
 condcri <- ts(ceust [,4], start = 2005, frequency = 4, end = 2014)
+
+#Tarea 1 importar la base de datos con las 4 tasas seleccionadas desde pag internet
