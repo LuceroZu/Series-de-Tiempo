@@ -1,0 +1,22 @@
+#Tarea R
+#De la practica 1 tenemos 
+
+temporal <- tempfile() #Nombrar archivo
+download.file("http://www.beta.inegi.org.mx/contenidos/proyectos/
+              enchogares/regulares/enoe/microdatos/enoe_15ymas/2016
+              /2016trim1_dbf.zip",temporal) #Descargar archivo
+
+#Pero en esa liga ya vienen en formato zip 
+    #http://www.beta.inegi.org.mx/contenidos/proyectos/enchogares/regulares/enoe/microdatos/enoe_15ymas/2016
+
+files = unzip(temporal, list=TRUE)$Name #Descomprimir y nombrar 
+unzip(temporal, files=files[grepl("dbf", files)]) 
+install.packages("foreign") #Comando para instalar paqueterias
+require (foreign) #Comando para llamar una paqueteria
+SDEMT116 <- data.frame(read.dbf("sdemt116.dbf")) #Tabla
+View (SDEMT116)
+
+###########
+
+#Bajar del INEGI 
+#(10.2, 10.3, 10.5, 10.7) http://www3.inegi.org.mx/Sistemas/infoenoe/Default_15mas.aspx?s=est&c=27736
