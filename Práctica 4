@@ -24,3 +24,34 @@ pceu <- data.frame(nprof,cpib,ocu,deso)
     #Mostrar en consola los primeros 12 y ultimos 12 datos (renglones)
 pceu [1:12, ] #Primeros 
 pceu [49:60,] #ultimos 
+
+    #En ST
+pceu12 <- pceu[1:12,]
+
+    #Convertir los objetos en ST desde el data frame comenzando en 2010 y mensual
+nprofts<- ts(nprof, start = 2010, frequency = 12)
+cpibts <- ts(cpib, start = 2010, frequency = 12)
+ocuts  <- ts(ocu, start = 2010, frequency = 12)
+desots <- ts(deso, start = 2010, frequency = 12)
+
+    #Ver cuando termina la ST
+end(nprofts)
+
+    #Graficar los profesionistas 
+plot(nprofts)
+    #Graficar ocupados y profesionistas
+plot(cbind(nprofts, ocuts))
+                             #cbind es para la funcion de combinar
+    #Graficar PIB y desocupados
+plot(cbind(cpibts,desots))
+    #Graficar todas juntas
+plot(cbind(nprofts,ocuts,cpibts,desots))
+
+####
+    #Graficar dentro de la funcion plot la serie (1 y 3) sin la fn. cbind 
+plot.ts(pceu [,c(1,3)]) #La c es concatenar 
+title(main= "Datos profesionistas y % de ocupados" ) #titulos 
+        #http://www.um.es/ae/FEIR/60/#ggplot2
+
+    #Hacer todo el data frame en una serie de tiempo
+pceust <- ts.intersect(pceu)
