@@ -1,0 +1,26 @@
+#################################################################################
+#######                          PRACTICA 4                              ########
+#Lo que hicimos en la Practia 3##################################################
+#1)Buscar en INEGI    2)Bajamos la ST      3)Ubicar la ruta de la ST en la compu
+#4)Importmos en R el archivo en csv        5)Reconocer el archivo como ST
+
+#Ejercicio#######################################################################
+    #Generar 4 objetos con datos aleatorios y que tengan 60 datos
+    #Objeto 1 de número de profesionista (mill) rango de 5 a 8
+    #Objeto 2 Crecimiento PIB rango de 0 a 5
+    #Objeto 3 Porcentaje de ocupados rango de 40 a 60 
+    #Objeto 4 Porcentaje de desocupados rango de 3 a 8
+                                      #Sample crea una muestra aleatoria 
+                                      #Debe tener 3 argumentos y 
+                                      #El reemplazo es para evitar que marque error
+nprof<- sample(5:8, 60, replace = T ) 
+cpib <- sample(0:5,60, replace = T)
+ocu  <-sample(40:60,60, replace = T)
+deso <- sample(3:8,60, replace = T)
+
+    #Hacer un data frame de los 4 objetos creados
+pceu <- data.frame(nprof,cpib,ocu,deso)
+
+    #Mostrar en consola los primeros 12 y ultimos 12 datos (renglones)
+pceu [1:12, ] #Primeros 
+pceu [49:60,] #ultimos 
