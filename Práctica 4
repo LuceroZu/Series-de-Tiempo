@@ -66,10 +66,11 @@ pceust <- ts.intersect(pceu)
     #Graficar en una misma imagen la ST 2 y 3
     #Graficar en una misma imagen la ST 1 y 4
 pibmx <-read.csv(("C:\\Users\\Sala-D19\\Downloads\\PIB tasa.csv"), header =F)
-unost<- ts (pibmx, start = 1980, end =1990)
-dosst<- ts (pibmx, start = 1991, end =2000)
-trest<- ts (pibmx, start = 2001, end =2010)
-cuast<- ts (pibmx, start = 2011, end =2015)
+unost<- ts (pibmx [1:10,],frequency = 1, start = 1980, end =1990)
+dosst<- ts (pibmx [11:20,],frequency = 1, start = 1991, end =2000)
+trest<- ts (pibmx [21:30,],frequency = 1, start = 2001, end =2010)
+cuast<- ts (pibmx 31:35,],frequency = 1, start = 2011, end =2015)
+
 
 plot(cbind(dosst,trest))
 plot(cbind(unost,cuast))
