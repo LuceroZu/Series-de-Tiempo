@@ -1,0 +1,90 @@
+#################################################################################
+#######                          PRACTICA 5                              ########
+#ST Multiple
+########################################Tomando en cuenta lo del viernes 10/02/17
+nprof<- sample(5:8, 60, replace = T ) 
+cpib <- sample(0:5,60, replace = T)
+ocu  <-sample(40:60,60, replace = T)
+deso <- sample(3:8,60, replace = T)
+
+#Hacer un data frame de los 4 objetos creados
+pceu <- data.frame(nprof,cpib,ocu,deso)
+
+#Mostrar en consola los primeros 12 y ultimos 12 datos (renglones)
+pceu [1:12, ] #Primeros 
+pceu [49:60,] #ultimos 
+
+#En ST
+pceu12 <- pceu[1:12,]
+
+#Convertir los objetos en ST desde el data frame comenzando en 2010 y mensual
+nprofts<- ts(nprof, start = 2010, frequency = 12)
+cpibts <- ts(cpib, start = 2010, frequency = 12)
+ocuts  <- ts(ocu, start = 2010, frequency = 12)
+desots <- ts(deso, start = 2010, frequency = 12)
+
+seriemul <- ts.intersect(nprofts, cpibts, ocuts, desots) #ST mult.con 4 variables
+plot(seriemul, main="Serie de tiempo múltiple", xlab="Años", 
+     ylab="Número de personas", col="blue", type="overplotted", pch=2) #Grafica 
+    
+    #pch es la forma que da para los puntos el pch=2 es un triangulo
+    #type es para que marque cada punto de la grafica
+    #xlim / ylim es para limitar el intervalo 
+
+#Dividir ST 
+  #Con funcion window( 1er argumento: serie a dividir, 2: donde inicia la new st, 3: donde acaba)
+seriemul10.11 <-window(seriemul, start=c(2010,1), end=c(2011,6))
+seriemul11.14 <-window(seriemul, start=c(2011,7), end=c(2014,11))
+
+plot(seriemul10.11, main="Serie de tiempo multiple",
+     xlab="Años", ylab="Numero de personas", col="purple")
+
+plot(seriemul11.14, main="STM", xlab="Años", ylab="Personas", col="violet")
+
+start(seriemul); end(seriemul)
+
+########################################################Ejercicio
+  #Obtener 4 ST con minimo 30 datos
+  #Las ST tienen que tener sustento para comparar
+  ##1. S1
+  ##2. S2
+  ##3. S3
+  ##4. S4
+
+  #Importarlas, declarar las St, graficar juntas como st c/u
+indcb <- read.csv(("C:\\Users\\Sala-D19\\Downloads\\cb.csv"),  header =T) 
+  #Fuente: http://www.inegi.org.mx/sistemas/bie/ 
+
+indic  <-ts(indcb[,1], frequency = 12, start = 2013) #S1
+inmen  <-ts(indcb[,2], frequency = 12, start = 2013) #S2
+imeina <-ts(indcb[,3], frequency = 12, start = 2013) #S3
+inacan <-ts(indcb[,4], frequency = 12, start = 2013) #S4
+
+plot(cbind(indic,inmen,imeina,inacan), main="Series de tiempo", 
+     xlab="Años", ylab="Tasa inflacion", col="purple")
+
+  #Crear la ST multiple y graficar con formato
+indmult <- ts.intersect(indic, inmen, imeina, inacan) #STM
+
+    plot(indmult, main="Serie de tiempo multiple Inflacion",
+     xlab="Años", ylab="Tasa inflacion", col="purple")
+
+  #Despues dividir las st en 3 periodos con intervalos iguales
+stmul1 <-window(indmult, start=c(2013,1), end=c(2014,4))
+stmul2 <-window(indmult, start=c(2014,5), end=c(2015,8))
+stmul3 <-window(indmult, start=c(2015,9), end=c(2016,12))
+  
+  #Graficar con formato
+plot(stmul1, main="STM Enero 2013- Abril 2014",
+     xlab="Años", ylab="Tasa de Inflacion", col="blue")
+
+plot(stmul2, main="STM Mayo 2014- Agosto 2015", 
+     xlab="Años", ylab="Tasa inflacion", col="violet")
+
+plot(stmul3, main="STM Septiembre 2015- Diciembre 2016",
+     xlab="Años", ylab="Tasa inflacion", col="purple")
+
+  #Graficar la ST con colores diferentes
+plot(indmult, main="STM Inflacion Colores",
+     xlab="Años", ylab="Tasa inflacion", col="turquoise", col.axis="purple", 
+   font.main=4, font.lab=2)
