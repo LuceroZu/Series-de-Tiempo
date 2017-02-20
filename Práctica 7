@@ -1,0 +1,6 @@
+##### Lunes 20 de Febrero de 2017
+#1- Investigar como se obtienen la tendencia y estacionalidad "en papel" o a mano
+##1.1- Con la serie de PIB de la clase anterior (periodo=4, trimestral)-->Par
+##1.2- Con una serie con el periodo=3 o 9-->Impar 
+
+#2- Hacer esta descomposición en R sin utilizar ninguna función. 
