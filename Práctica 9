@@ -1,0 +1,105 @@
+##################24/02/2017#############################
+#########Algoritmos Base#################################
+###FOR
+u1<- (1:10)
+for (i in 1:10){  #Importante el corchete
+    u1[i]<- u1[i]+2
+    print(u1[i]) #Ver en consola
+}
+###WHILE
+s <- 5
+while(s<6) {s<- s*2; print (s);}
+
+s<- 1
+while (s<5) {s<- s+1; if(s==4) break; print(s); } #Break, romper con cierta condicion
+
+s<- 1
+while (s<5) {s<- 0+1; if(s==2) break; print(s); } #Jamas encuentra el 2, no se detiene
+#Para parar la operacion dar clic en stop
+
+s<- 1
+while (s<3) {s<- s+1; if (s==3) next; print(s)} #next. 
+
+
+###########################Corrección práctica 8########################################
+desocupacion<- read.csv (file.choose())#abre ventana de windows y te permite elegir archivo
+tsd <-ts (desocupacion, frequency =4, start=2007 )
+tsd
+
+decompose(tsd)
+meannc <- 1:45 #Crearon vector
+for (i in 1:45) {  #Crear tendencia no centrada
+  meannc[i]<- (tsd[i, 1] +tsd[i+1,1]+ tsd[i+2, 1] +tsd[i+3,1] )/4
+}
+
+lenght(meannc) #saber si el vector tenia 45 datos
+
+meannb<- 1:44 #Tendencia centrada
+for(i in 1:44){
+  meanb[i]<- (meannc[i]+ meannc[i+2])/2
+}
+
+YT<- 1:44 #eliminar tendencia
+for(i in 1:44){
+  YT[i]<-tsd [i+2,1]-meanb[i] #Le pusieron el 1+2 para poder restar el 3er renglon
+}
+
+#Modelo aditivo
+est<- matrix(1:48, nrow=4) #row=fila
+k=1
+i=1
+for (c in 1:12) #columnas: 12 años
+  {
+  for (f in 1:4) #filas: 4 periodos
+    {if(k<=2 |k>=47) #Operador log ó
+      {
+      est[f,c]=0
+      }
+  else{
+    est[f,c]=YT[i]
+    i=i+1
+      }
+  k=k+1
+  }
+}
+est
+
+v<-matrix(1:4, nrow=4) #IVE promedios
+v[1,1]<- mean(est[1,2:12]) #eliminar el primer componente, empieza en 2
+v[2,1]<- mean(est[2,2:12])
+v[3,1]<- mean(est[3,1:11]) #eliminar el ultimo componente, empieza el 1
+v[4,1]<- mean(est[4,1:11])
+v
+
+tabla<- cbind(est,v) #Pegar tablas o matrices de misma magnitud, se juntan x columna
+
+iveglobal <- mean(tabla[,13])
+tabla2 <- cbind(est,v,v-iveglobal) #IVE corregido
+
+#dimnames(tabla2)<- list(c("Trimestre 1", "Trimestre 2", "Trimestre 3", "Trimestre 4", c() )) 
+#Pone nombres matriz primero filas y luego columnas
+
+
+######################Graficas###########################
+desocupacion <- read.csv ("C:\\Users\\SALA-D19\\Downloads\\tarea2.csv")
+tsdes <- ts(desocupacion, frequency=4, start=2005)
+detsdes <- decompose(tsdes)
+detsdes$trend #Tendencia
+detsdes$seasonal #Temporalidad
+###Graf. Tendencia
+plot(tsdes, col="blue", main="Tasa Desocupacion Trimestral", ylab="Tasas", xlab="Años")
+lines (detsdes$tren, col="red", ylab="Tendencia")  
+              #Lines En la grafica previa pone con linea de otros datos
+              #Aqui hace que se suavicen los picos, porque es la tendencia
+
+###Graf. Estacionalidad
+monthplot(detsdes$seasonal, main="IVEc", ylab="IVEc Trimestral") 
+              #No se lee mucho pero se aprecia que el primer dato daba -.00167
+
+###Descomposicion con MODELO MULTIPLICATIVO##############
+detsdes<- decompose(tsdes, type="Multiplicative") 
+###TAREA para lunes
+  #Descomponer una serie pero con un modelo multiplicativo
+  #1) Encontrar una ST con tendencia a la alza, estacionaridad = se incrementa
+  #2) Aplicar modelo multiplicativo
+  #3) Graficar tendencia
