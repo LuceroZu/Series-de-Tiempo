@@ -1,0 +1,77 @@
+####################### PRACTICA 10 ##########################
+#################Descomposición clásica#######################
+#Se utiliza la función descompose
+#Otro tipo de descomposición de la estacionariedad,
+#Tendencia y estacionariedad es la descomposición
+#Por Loose la cual esta basada en un algoritmo que permite
+#Descomponer las series de tiempo en 3 elementos: estacionariedad, tendencia y aleatoriedad
+#Una de las ventajas de esta descomposicióm es el calculo de la estacionariedad que se obtienen
+#valores de estacionariedad no constantes, en contraste con el método clasico de descomposicion
+
+###Descomposición clásica-------------------------------------
+#Ejemplo
+desocupacion <- read.csv("C:\\Users\\Sala-D19\\Downloads\\tarea2.csv")
+class (desocupacion) #Aparece o muestra que tipo de datos son "en el ejemplo sale data.frame"
+des <- ts(desocupacion, frequency =4 , start=2005)
+class(des) #En ejemplo: st
+desco <- decompose(des)
+tend1 <- desco$trend #Tendencia de la desomposicion clasica
+plot(tend1, col="blue", main="Tendencia desocupación", ylab="Tasas"
+     , xlab="Años")
+
+###Descomposición Tendencia, estacional por Loose------------
+##Se utliliza la función stl()
+#Entonces para descomponer por Loose utilizamos
+desco2 <- stl(dess, s.window="periodic", robust = T ) #seasonal tend loose
+                     #Usa el objeto time series, s.window="periodica", robust=T (da una mejor descomposición)
+                #Las time series se tiene que modificar des <- ts(desocupacion[1:48,1] , frequency =4 , start=2005)
+dess <- ts(desocupacion[1:48,1] , frequency =4 , start=2005)
+names(desco2) #Nombres de las variables
+
+####Comparando descomposiciones
+desco2 #Aqui nos da una matriz completa porque ya no es descomposi. por promedios moviles
+desco$trend
+tend2 <-desco2$time.series [, 2] #Pedimos la columna 2 pq es la tendencia 
+                                #1er columna es estacionalida y 3era es error
+tend2
+#graficando linea de tendencia 2 en la misma grafica de la linea 19
+lines(tend2, col="red")
+esta2 <-desco2$time.series [, 1]
+esta2
+
+#Bajando paqueteria
+install.packages("fpp")
+require (fpp)
+ajus <-seasadj (desco2)#Ajustamos la estacionalidad
+    #funcion seasadj para ajustar
+    
+###Pronostico metodo ingenuo
+    #Pronostico + sencillo
+    #Pronostica con los lim de confianza de 90 y 95
+    #Se usa cuando la st tiene 
+
+ingel <- naive(ajus) 
+    #h= periodos que quieres pronosticar 
+    #naive= metodo de pronostico
+plot (ingel)
+
+
+########Ejercicio#############
+#Hacer descomposicion con la base del PIB
+PIB <- read.csv("C:\\Users\\Sala-D19\\Downloads\\PIB.csv")
+
+#D.Clásica
+pibst   <- ts (PIB ,frequency = 4,start = 2007)
+dpibc   <- decompose(pibst)
+tenpibc <- dpibc$trend
+
+#D. Loose
+pibstl <- ts (PIB[1:35,1] ,frequency = 4,start = 2007)
+dpibl  <- stl(pibstl, s.window="periodic", robust = T )
+tenpibl<- dpibl$time.series [, 2]
+
+#Grafica C.
+plot(tenpibc, col="blue", main="Tendencia PIB", ylab="PIB"
+     , xlab="Años")
+#Agregar linea del Loose
+lines(tenpibl, col="red")
