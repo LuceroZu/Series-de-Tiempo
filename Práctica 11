@@ -1,0 +1,51 @@
+##################################### PRACTICA 11 ################################################
+install.packages("fpp")
+require(fpp)
+
+plot(window(elec,start = 1980), ylab="Gwh", xlab="Year", main="Australian electricity production")
+#Estacionalidad, Tendencia y C. Ciclico
+    seasonplot(elec, s=12, year.labels = F,
+               main = "Electricidad",
+               ylab="Año", col=rainbow(20),
+               year.labels.left = TRUE, pch=15)
+    #seasonplot para ver en que meses se da mas la estacionalidad
+    #Primer argumento st, s de season (periodos), 
+    #Lo siguiente es para que aparezca etiqueta años pero solo los de la izquierda
+    #rainbow son colores y son 20
+    #pch figurita que marca cada mes =15 cuadrado
+
+
+plot(bricksq, ylab="million units", xlab="Year", main="Australian clay brick production")
+#Esta. y C. Ciclico no mucho tendncia
+    seasonplot(bricksq, s=4, year.labels =F, 
+               main = "Produccion ladrillo",
+               ylab="Año", col=rainbow(20),
+               year.labels.left =TRUE, pch=10) 
+    #Son datos trimestrales s=4
+    #pch figurita =10 circulo con cruz dentro
+    
+    
+plot(hsales, main="Sales of new one-family houses, USA", ylab="Total sales", xlab="year")
+#No esta. ni tendencia, posible ciclo
+    seasonplot(hsales, s=12, year.labels =T, 
+               main = "Venta de casas",
+               ylab="Año", col=rainbow(20),
+               year.labels.left =TRUE, pch=5)
+    #Alza de c. ciclico de marzo del 87
+    #pch figurita=5 rombo
+    #Mostramos los años en ambos lados
+
+dec<- decompose(bricksq)    
+#Eliminando tendencia y estacionalidad
+sinesta<-bricksq-dec$seasonal #estac
+sintend<-bricksq-dec$trend #tend
+
+plot(sinesta)
+plot(sintend)
+
+#EJERCICIO-TAREA  ###########################################################################
+#Analizar el porcentaje del PIB anual, a que se debe una de cada de los elementos encontrados
+#Explicar del periodo 1960-1979
+#1) Interpretacion de elementos de la grafica en script 
+#2) Archivo word, base con la grafica y la interpretacion
+#Nota: Hacer antes del miercoles
