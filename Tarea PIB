@@ -1,0 +1,17 @@
+################################### Tarea 3 ################################### 
+
+PIB<-read.csv(choose.files(), header=F)
+PIBST<-ts(PIB, start=1961, frequency = 1)
+
+require(fpp)
+plot(PIBST, ylab="PIB %", xlab="Año", main="PIB % 1961-2015 ", col="red")
+plot(window(PIBST,start = 1961, end=1979), ylab="PIB %", xlab="Año", main="PIB % 1961-1979", col="blue")
+#No cuenta con tendencia, ni estacionalidad y tampoco componente ciclico
+
+
+seasonplot(PIBST, s=1,main = "PIB % 1961-1979",
+           ylab="PIB", col=rainbow(20),
+           year.labels.left =TRUE, pch=15)
+#Esta función no puede ser usada porque la serie de tiempo es anual y por lo
+#tanto la función seasonplot no puede funcionar ya que trabaja con periodos 
+#fraccionados (de trimestres, semestres, cuatrimestres y mensual)
