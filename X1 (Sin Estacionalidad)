@@ -1,0 +1,43 @@
+######################## APUNTE 8/03/17 #################################
+#Cuando usar modelo aditivo o multiplicativo
+#--Aditivo: Se utiliza cuando la magnitud de las fluctuaciones estacionales de la serie no varia
+#           al hacer lo de la tendencia  
+
+#####Multiplicativo
+#Estos modelos son apropiados cunado la magnitud de las fluctuaciones estacionales de la serie
+#crece y decrece proporcionalmente con los crecimientos y decrecimientos de la tendencia
+#respectivamente.
+
+#Ahora como vimos hay 2 modelos que podmos descomponer la ST
+##1) Modelo aditivo          x t= m t + 
+##2) Modelo multiplicativo
+
+#Para descomponer una ST en un modelo multiplicativo
+deso   <- data.frame(read.csv(file.choose())) #tarea2.csv
+desot  <- ts(deso, frequency = 4, start=2005)
+plot(desot)
+lines(eeadj, col="blue")
+dectsd <- decompose(desot) #descomposicion modelo aditivo
+dectsdmul <- decompose(desot, type="mult") #descomposicion modelo multiplicativo
+
+#Graficamos los dos modelos
+plot(dectsd)
+plot(dectsdmul)
+
+####Desestacionalizar una ST 
+#Se desestacionaliza una st por diferentes razones
+#Entre las que se destacan para poder predecir nuestros datos con mayor precision y sin contar
+#con factores externos al comportamiento de nuestros datos 
+#2 elementos que permiten desestacionalizar una serie
+
+require(fpp)
+eeadj<- seasadj (dectsd) #seasadj viene dentro del paquete fpp, fn. R
+                         #Quita la estacionalidad
+                         #De nuestra st es restar el componente estacional
+plot(eeadj)
+
+sinesta <- desot-dectsd$seasonal #Se quita estacionalidad de manera manual
+                                 #Mi st- componente estacional
+
+#comprobando que son iguales 
+eeadj-sinesta #Debe dar una matriz de 0 ceros para saber que son iguales (=)
