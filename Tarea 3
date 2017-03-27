@@ -1,0 +1,31 @@
+#Tarea del 24/03/17
+install.packages("forecast")
+require (forecast)
+desoc<- read.csv(choose.files(), header=T)
+desoct <-ts(desoc, frequency = 4, start=2005)
+desoc10 <-ts(desoc[1:24,], frequency = 4, start = 2005)
+desoc16 <-ts(desoc[25:48,], frequency = 4, start = 2011)
+
+#Pronosticos
+d1p <-meanf(desoc10, h=23)
+d2p <-naive(desoc10,h=23)
+d3p <-snaive(desoc10,h=23)
+d4p <-rwf(desoc10, h=23, drift =T)
+
+x11()
+par(mfrow=c(3,1))
+plot(desoct, main="Desocupación 2005-2016")
+lines(d1p$mean, col=2)
+lines(d2p$mean, col=3)
+lines(d3p$mean, col=4)
+lines(d4p$mean, col=5)
+legend("topleft", lty=1, col=c(2,3,4,5),
+legend = c("Media","Ingenuo","Ingenuo estacional","Deriva"))
+plot(desoc10, main="Desocupación 2005-2010")
+plot(desoc16, main="Desocupación 2011-2016")
+lines(d1p$mean, col=2)
+lines(d2p$mean, col=3)
+lines(d3p$mean, col=4)
+lines(d4p$mean, col=5)
+legend("topleft", lty=1, col=c(2,3,4,5),
+legend = c("Media","Ingenuo","Ingenuo estacional","Deriva"))
