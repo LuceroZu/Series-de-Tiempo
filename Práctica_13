@@ -1,0 +1,33 @@
+############################## Práctica 13 ##############################
+
+asa1 <- data.frame(read.csv("C:\\Users\\Sala-D19\\Downloads\\10.5Asalariados.csv",header=T)[7,2:49]) 
+                                                            #Renglon 7 y de la columna 2 a 49
+asa1 <-t(asa1) #Se antepone una t para TRANSPONER
+asa1 <-as.numeric(asa1) #sale chr de caracter se pasa a numerico
+asat <-ts(asa1, start =2005, frequency=4)  #Hacemos la ST, sale Time- Series
+
+##
+require(forecast)
+mod1 <-ses(asat, alpha =0.1, initial = "simple",h=8) 
+          #1er arg es st, 2do es alfa (parametro entre 0 y 1), 
+          #3er initial="simple", 4to numero de pronosticos h= (indica que es suavizado simple)
+mod2 <-ses(asat,alpha =0.3, initial = "simple",h=8)
+mod3 <-ses(asat,alpha =0.95, initial = "simple",h=8)
+x11() #Abre ventana
+plot(mod1, ylab = "Asalariados",
+     xlab ="Año", main ="Asalariados", type="o")
+
+#Del mod1 me das datos ajustados, que son valores que el modelo genera con parametro alpha
+lines(mod1$fitted, col="brown", type="o") 
+lines(mod2$fitted, col="red", type="o") 
+lines(mod3$fitted, col="green", type="o") 
+
+#mean es el pronostico 
+lines(mod1$mean, col="brown", type="o") 
+lines(mod2$mean, col="red", type="o") 
+lines(mod3$mean, col="green", type="o") 
+
+#El topleft es para acomodar la leyenda en la grafica
+legend("topleft", lty=1, col=c(1,"blue","red", "green"), 
+       c("Datos", expression(alpha==0.1),expression(alpha==0.3),expression(alpha==0.95)), pch=11)
+
