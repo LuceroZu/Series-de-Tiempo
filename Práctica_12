@@ -18,7 +18,7 @@ desocmod4<-rwf(desot, h = 4 ,drift=TRUE)
 
 #esto es para graficar el pronóstico.
 
-x11()
+x11() #Ampliar grafica y poner en otra ventana
 
 plot(desocmod1, main = "Pronóstico de desocupación trimestral")
 
