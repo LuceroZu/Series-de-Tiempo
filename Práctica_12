@@ -1,9 +1,47 @@
-#Poner lo primero del miercoles
+######################## PRACTICA 12########################
+PIBa<- read.csv (file.choose()) #Seleccionamos PIB anual %
+acf(PIBa) #Correlograma No Ruido Blanco ni CA, aunque sin el 2°dato si tendria RB
 
+Pib<- read.csv(file.choose())#PIB millones
+pibst<- ts(Pib,start = 2007, frequency = 12)
+acf(Pib) #correlograma No RB ni caminata aleatoria
 
+#Intento
+acf(Pib, main="PIB", col="red") #Si se puede agregar titulo y cambiar colores
 
+#Aplicación de pronosticos lineales: 
+#1)Ingenuo 2) Promedio 3)Ingenuo estacional 4)Deriva
 
-##############################24/03/17
+#Ingenuo: Esta basado en la última observación que arroja la ST. #######
+#         Es decir, asume que la observacion + importantes es la última.
+#         Fn. R--> naive(st, h=# de pronosticos) y usa la paqueteria forecast 
+#                 Debe ser o estar en ST
+install.packages("forecast")
+require(forecast)
+naive(pibst, h=4) #Los 1eros 4 pronosticos(1er columna) es mi ultimo dato. 
+########################################################################
+
+#Promedio:Este metodo le da el mismo peso a todos los datos u observaciones. #####
+#         Es decir, se asume con este metodo que todas las observaciones tienen la
+#         misma importancia, por lo que el pronostico es un promedio de todos los datos.
+#         Fn. R--> meanf(st,h=# de pronosticos)
+#                 Debe ser o estar en ST
+meanf(pibst, h=4)
+plot(meanf(pibst, h=4))
+########################################################################
+
+#Ingenuo Estacional:Este metodo se utiliza en st con alta estacionalidad.
+#                   Consiste en darle el mayor peso o la ponderacion al dato del mismo
+#                   periodo en el año anterior, por ejemplo: Trimestre 2 del 2005 es =
+#                   trimestre 2 del 2006
+#       Fn. R-->snaive(st, h=# pronodtico) "seasonal naive", definir st la freq. bimestral, tri,etc.
+snaive(pibst, h=4)
+
+####TAREA####
+#Buscar una st de Méx, donde con el correlograma determinar que tiene ruido blanco.
+#Buscar otra donde muestre el correlograma exponga que la st tiene caminata aleatoria.
+
+##############################24/03/17 ##############################
 require(forecast)
 
 rwf(desot, h = 4, drift=TRUE)
