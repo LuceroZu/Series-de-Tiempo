@@ -1,0 +1,53 @@
+#Poner lo primero del miercoles
+
+
+
+
+##############################24/03/17
+require(forecast)
+
+rwf(desot, h = 4, drift=TRUE)
+
+desocmod1<-meanf(desot, h = 4)#Método del promedio
+
+desocmod2<-naive(desot, h = 4)
+
+desocmod3<-snaive(desot, h = 4)
+
+desocmod4<-rwf(desot, h = 4 ,drift=TRUE)
+
+#esto es para graficar el pronóstico.
+
+x11()
+
+plot(desocmod1, main = "Pronóstico de desocupación trimestral")
+
+lines(desocmod2$mean,col=5)
+
+lines(desocmod3$mean,col=6)
+
+lines(desocmod4$mean,col=7)
+
+legend("topleft", lty=1, col=c(5,6,7,8),
+
+legend = c("media","ingenuo","ingenuo estacional","deriva"))
+
+names(desocmod1) #nos ayuda a ver qué nos arroja el modelo
+
+#esto es para graficar cómo se ajusta el modelo.
+
+X11()
+
+plot(desocmod1, main = "Pronóstico de desocupación trimestral")
+
+lines(desocmod2$fitted,col=5)
+
+lines(desocmod3$fitted,col=6)
+
+lines(desocmod4$fitted,col=7)
+
+legend("topleft", lty=1, col=c(5,6,7,8),
+
+legend = c("media","ingenuo","ingenuo estacional","deriva"))
+
+names(desocmod1)
