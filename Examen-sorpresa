@@ -1,0 +1,59 @@
+##### 17-04-17 Examen sorpresa #####
+#1) Bajar acciones de Televisa, precio de cierre 2016
+#2) Ajustar 4 modelos de suavizado exponencial simple (alpha =0.2, 0.4, 0.6, 0.8)
+#3) Graficar en una sola grafica y con la grafica decidir cual de los 4 es el mejor ajuste
+#4) Una vez que se decida graficamente mejor ajuste, aplicar la evaluacion de los ajustes
+#Y utilizar las medidas MAE y RMSE extrayendolas de tal forma que creen un vector que compare 
+#estas medidas y este vector indique que alpha es mejor.
+#5) Identficar tendencia, estacionariedad y ciclos en la st e interpretar componentes
+
+require(fpp)
+#Los datos fueron extraidos de 
+#https://mx.investing.com/equities/grupo-televisa-sa-adr-historical-data?cid=27010
+
+at<-read.csv("C:\\Users\\Sala-D19\\Downloads\\AT16.csv", header=F)
+ats<- ts(at, frequency = 252, start=2016)
+
+mod1<- ses(ats, alpha=0.2,initial="simple", h=8)
+mod2<- ses(ats, alpha=0.4,initial="simple", h=8)             
+mod3<- ses(ats, alpha=0.6,initial="simple", h=8)             
+mod4<- ses(ats, alpha=0.8,initial="simple", h=8)   
+
+plot(mod1, main="Suavizado exponencial simple", xlab ="Fecha", ylab="Precio de Cierre", col=1)
+lines(fitted(mod2), col="blue")
+lines(fitted(mod3), col="green")
+lines(fitted(mod4), col="pink")
+
+#El modelo que mas se ajusta graficamente es el modelo 4 con alpha=0.8
+
+aa<- ats- mod1$fitted
+a1<-mean(abs(aa))          ##MAE= 1.713482
+a2<-sqrt(mean(aa^2))##RMSE= 2.141628
+
+bb<- ats- mod2$fitted
+b1<-mean(abs(bb))          ##MAE=1.329912
+b2<-sqrt(mean(bb^2))##RMSE=1.714154
+
+cc<- ats- mod3$fitted
+c1<-mean(abs(cc))          ##MAE=1.164278
+c2<-sqrt(mean(cc^2))##RMSE=1.529228
+
+dd<- ats- mod4$fitted
+d1<-mean(abs(dd))          ##MAE=1.098732
+d2<-sqrt(mean(dd^2))##RMSE=1.4417
+
+#El modelo que se acerca más a cero es el modelo 4 nuevamente
+
+Vecmae<-c(a1,b1,c1,d1)
+vecrmse<-c(a2,b2,c2,d2)
+M<- matrix(c(Vecmae,vecrmse),ncol=2)
+
+min(Vecmae) #El valor del MAE mas cercano a cero es 1.0987
+min(vecrmse) #El valor del RMSE mas cercano a cero es 1.4417
+
+which.min(Vecmae) #El valor MAE más cercano a cero se encuentra en la 4ta posicion (4to modelo)
+which.min(vecrmse) #El valor RMSE más cercano a cero se encuentra en la 4ta posicion (4to modelo)
+
+#La tendencia que se observa graficamente es suavemente a la alza para fechas posteriores al 2016
+#No existe estacionariedad puesto que los datos con los que contamos solo son de un año
+#Se podría decir que existen ciclos a partir de la mitad del 2016 (por junio)
