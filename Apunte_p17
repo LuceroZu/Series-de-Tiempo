@@ -1,0 +1,86 @@
+#########################   Tendencia lineal de Holt   #########################
+##Propuesta hecha por profesor en 1957
+##Extensión del SES (Suavizamiento exponencial)
+##Ayudan para ST con tendencia
+##1 ec. de pronostico y 2 de suavizamiento (1/nivel y otra para tendencia)
+
+##Ecuación del pronostico---> Holt lineal####
+# (Y^)t+ h|t = lt + h bt
+
+##Ecuación nivel 
+# lt = alpha yt + (1- alpha) (lt-1 +bt-1)
+
+##Ecuación tendencia
+# bt = beta* (lt - lt-1) + (1-beta*) bt-1
+
+#lt: Estima el nivel de la st = peso ponderado de la obs. yt
+#bt: Denota la tendencia= peso ponderado de la estimacion de la tend.
+#Beta*t: parametro de suavizamiento para la tend.
+
+
+####Calculo en R ####
+#deso <-ts(deso, start=2005)
+#mod1 <- holt(deso, alpha=0.8, beta=0.2, initial="simple", h=5)
+#fitted(fit1)
+
+
+
+####Variacion--Tendencia exponencial de Holt ####
+#Se logra con la multiplicación del nivel con la pendiente
+#bt: representa una tasa de crecimiento estimada 
+
+##Ec. pronostico---> Holt lineal exponencial ####
+# (Y^)t + h|t = lt bt(exp h)
+
+##Ec. nivel
+# lt = alpha (yt) + (1-alpha) (lt-1 bt-1)
+
+##Ec. tendencia
+# bt = beta* (lt/ lt-1) + (1- beta*) bt-1
+
+#### R ####
+#fit2 <- holt(deso, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5)
+#plot(fit2)
+#fitted(fit2)
+
+
+
+#### Modelo Tendencia aditiva amortiguado ####
+#Plantean tendencia constante
+#Proyecciones no tan a largo tiempo
+#Incluye parametro de amortiguar teta (0,1)
+
+##Ec. pronostico--->H. amortiguado aditivo ####
+# (y^)t + h|t = lt (teta + teta^2 + ...+ teta exp(h) ) bt
+
+##Ec. nivel
+# lt= alpha yt + (1- alpha)(lt-1 + teta bt-1)
+
+##Ec. tendencia
+# bt= beta* (lt - lt-1) + (1- beta*) teta bt-1
+
+##forma de la correccion del error---------------
+#lt= lt-1 + teta bt-1 + alpha et
+#bt= teta bt-1 + alpha beta* et
+
+#### R ####
+#fit4 <- holt(deso, damped=T)
+
+
+#### Modelo Tendencia multiplicativa amortiguado ####
+##Finalidad de mejorar los pronosticos
+##Resulta de la multiplicación del nivel y la tendencia
+##Produce menos pronosticos conservadores que el metodo de holt lineal
+
+##Ec. Pronostico Tend. mult. amor ####
+#(Y^)t+ h|t = lt bt exp(teta'1 + teta'2 + ... + teta'h) 
+
+##Ec. nivel
+# lt= alpha yt + (1- alpha) lt-1 bt-1'teta
+
+##Ec. tend.
+
+##forma de correcion del error
+
+## R ####
+#fajuste5 <- holt(deso, exponential=T, damped=T)
