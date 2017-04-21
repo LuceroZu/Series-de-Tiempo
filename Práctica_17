@@ -1,0 +1,54 @@
+####################### Práctica 17 ####################### 
+# 2 St (min 15 datos) con tendencia (alza o baja)
+# Cortar series en el 80% de sus datos
+# graficar 4 metodos junto con datos reales
+
+require(fpp)
+de  <- read.csv("C:\\Users\\Sala-D19\\Downloads\\T2.csv", header=T)
+des <-ts(de, start = 2005, frequency = 4)
+st1 <-ts(de[2:40,], start = 2005, frequency = 4)
+
+ca  <- c(6, 5.1, 7.7, 9, 8.3, 8.1, 9.6, 10, 6.1, 3.8, 6.8, 8, 6.4, 7.9, 10, 8.9, 5.5, 9, 9.1, 9.9, 8.9, 8)
+cal <-ts(ca, start = 2014, frequency = 6)
+st2 <-ts(ca[1:16], start=2014, frequency = 6)
+
+#M- H. lineal simple
+modst11 <- holt(st1, alpha=0.8, beta=0.2, initial="simple", h=5)
+modst21 <- holt(st2, alpha=0.8, beta=0.2, initial="simple", h=5)
+
+#M- H. lineal exponencial
+modst12 <- holt(st1, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5)
+modst22 <- holt(st2, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5)
+
+#M- H. amortiguado aditivo
+modst13 <- holt(st1, damped=T)
+modst23 <- holt(st2, damped=T)
+
+#M- H. amortiguado multiplicativo
+modst14 <- holt(st1, exponential=T, damped=T)
+modst24 <- holt(st2, exponential=T, damped=T)
+
+dst1 <- decompose(st1)
+tend1 <- dst1$trend
+plot(tend1) #La tendencia de la serie  1 (desocupacion) es hacia la alza
+
+dst2 <- decompose(st2)
+tend2 <- dst2$trend
+plot(tend2) #La tendencia de la serie 2 (calificaciones) es hacia la alza
+
+plot(des, main="ST1", col=1, xlab ="Año", ylab="tasa desocupacion")
+lines(modst11$mean, col="pink")
+lines(modst12$mean, col="green")
+lines(modst13$mean, col="blue")
+lines(modst14$mean, col="purple")
+legend("topleft", lty=1, col=c(1,"pink","green","blue", "purple"),
+legend = c("Datos","Lineal s.","Lineal e.","Aditivo A.", "Multi A."))
+
+
+plot(cal, main="ST2", col=1, xlab ="Año", ylab="Calificacion")
+lines(modst21$mean, col="pink")
+lines(modst22$mean, col="green")
+lines(modst23$mean, col="blue")
+lines(modst24$mean, col="purple")
+legend("topleft", lty=1, col=c(1,"pink","green","blue", "purple"),
+legend = c("Datos","Lineal s.","Lineal e.","Aditivo A.", "Multi A."))
