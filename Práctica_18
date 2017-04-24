@@ -1,0 +1,32 @@
+####################### Práctica 18 ####################### 
+# Buscar/ generar St (min 15 datos) con estacionalidad
+# Aplicar el pronostico en los 2 metodos de holt winter
+# Y ademas apliquen el pronostico de tendencia  exp 
+# Graficar para comparar
+
+require(fpp)
+require(forecast)
+ga  <- read.csv("C:\\Users\\Sala-D19\\Downloads\\Gasolina.csv", header=F)
+gas <-ts(ga, start = 2010, frequency = 12)
+gg  <-ts(ga[1:32,], start = 2010, frequency = 12)
+plot(gas) #tiene estacionalidad a inicios de año (enero-marzo)
+
+##Holt winter---------
+#Aditivo
+modhw  <- hw(gg, h=5, seasonal = "additive")
+
+#Multiplicativo
+modhwm <- hw(gg, h=5, seasonal="multiplicative")
+
+##Tendencia exponencial 
+modte <- holt(gg, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5)
+
+x11()
+plot(gas, main="Pronosticos gasolina", xlab="Año", ylab ="Precio", col=1)
+lines(modhw$mean, col="purple")
+lines(modhwm$mean, col="pink")
+lines(modte$mean, col="green")
+legend("topleft", lty=1, col=c(1,"purple","pink","green"), 
+       legend = c("Datos","Holt Aditivo ","Holt Multiplicativo","T. Exponencial"))
+       
+       #Se ajusta mejor a los datos los modelos Holt 
