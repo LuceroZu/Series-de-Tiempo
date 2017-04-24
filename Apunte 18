@@ -1,0 +1,20 @@
+################## Apunte 24/04/17 ##################
+###Holt winter
+
+##Finalidad de captar la estacionalidad en una st
+##Plantea 3 ecuaciones de suavizamiento, nivel, tendencia y estacionalidad
+##Trata de pronosticar una estacionalidad
+##Parametros alfa, beta, gamma
+
+##Dos variaciones del metodo
+#1) Aditivo
+#(Y^)t + h|t = lt + hbt + st-m+hm
+#lt = alfa (yt - st-m) + (1-alfa) (lt-1 + bt-1)
+#bt = beta* (lt- lt-1) + (1- beta*) bt-1
+#st = gamma(yt - lt-1 -bt-1) + (1- gamma) st-m
+
+#2)
+
+#### R ####
+#modhw  <- hw(deso, seasonal="aditive")        (1)
+#modhwm <- hw(deso, seasonal="multiplicative") (2)
