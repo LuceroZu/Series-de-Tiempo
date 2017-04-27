@@ -1,0 +1,208 @@
+install.packages("fpp")
+install.packages("forecast")
+
+################### Ejercicio en clase ####################
+### Utilizar 3 series de tiempo
+# *Precios diarios del dólar últimos 6 meses 
+# *Acciones de ICA diarias cierre de 2016 
+# *Últimos 16 años crecimiento (%) del Pib anual 
+# *Acciones de Bimbo diarias cierre 2016 
+# *Una serie que tenga que ver con su trabajo final 
+
+#1) obtener las series
+#2) convertirlas en series de tiempo y graficarlas
+#3) analizar las gráficas y decidir qué modelo usar
+#modelos simples (ingenuo estacional, ingenuo, promedio, deriva), holt lineal, holt amortiguado, holt Winter
+
+#4) con cada una de las series hacer una comparación de los datos ajustados de los modelos 
+#de predicción (elegir 1 modelo de simple, 1 holt, 1 amortiguado y 1 winter), 
+#despues analizar cual ajusta mejor y porque ustedes creen que este modelo realiza el mejor ajuste. 
+#Apliquen la función accuracy para saber si su análisis grafico coincide con los resultados del accuracy
+
+#5) con cada una de las series hacer una comparación de los datos pronosticados de los modelos de predicción 
+#(elegir 1 modelo de simple, 1 holt, 1 amortiguado y 1 winter), despues analizar cual pronostica mejor
+
+#fiited: ajustados, comparar los datos
+#mean: promedio, pronosticos
+
+require(fpp)
+require(forecast)
+
+#Bimbo-------------------
+b   <-read.csv(file.choose(), header=F)
+bim <-ts(b, start=2016, frequency = 252)  
+bimb<-ts(b[1:200,], start =2016, frequency = 252) 
+#bimb<- window(b, start = c(2016, 1), end = c(2016,200))
+plot(bim, main="Acciones de Bimbo 2016", xlab="Periodo", ylab="Precio", type="o")
+
+###Como  no tiene estacionalidad se ocuparán los siguientes modelos
+ms <-meanf(bim, h=5) #Metodo simple elegido: Promedio 
+mhle <- holt(bim, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5) #Modelo Holt lineal exponencial
+mham <- holt(bim, exponential=T, damped=T) #Holt Amortiguado multiplicativo
+mhwm <- modhwm <- hw(bim, h=5, seasonal="multiplicative") #Holt winter multiplicativo
+mhte <- holt(bim, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5) #Tendencia exponencial
+
+x11()
+plot(bim, main="Bimbo", xlab="", ylab="", type="o", col=1)
+lines(ms$fitted, col="blue")
+lines(mhle$fitted, col="orange")
+lines(mham$fitted, col="green")
+lines(mhwm$fitted, col="purple")
+lines(mhte$fitted, col="yellow")
+legend("topleft", lty=1, col=c(1,"blue","orange","green","purple","yellow"), 
+       legend = c("Datos","Promedio","Holt lineal exp","Holt amortiguado mult","Holt winter mult","T. Exponencial"))
+#Los modelos que se ajustan más son los Holt
+
+acb1 <-accuracy(ms)
+MAEb1<-acb1[,3]
+
+acb2 <-accuracy(mhle)
+MAEb2<-acb2[,3]
+
+acb3 <-accuracy(mham)
+MAEb3<-acb3[,3]
+
+acb4 <-accuracy(mhwm)
+MAEb4<-acb4[,3]
+
+acb5 <-accuracy(mhte)
+MAEb5<-acb5[,3]
+
+Vecmae<-c(MAEb1,MAEb2,MAEb3,MAEb4, MAEb5)
+which.min(Vecmae) 
+#El metodo que resulta mas cercano a cero es el "3", Holt amortiguado mult.  
+#Mi analisis grafico indicaba que los modelos que se ajustan mejor eran los Holt
+
+ms1 <-meanf(bimb, h=5) #Metodo simple: Promedio 
+mhle1 <- holt(bimb, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5) #Modelo Holt lineal exponencial
+mham1 <- holt(bimb, exponential=T, damped=T) #Holt Amortiguado multiplicativo
+mhwm1 <- modhwm <- hw(bimb, h=5, seasonal="multiplicative") #Holt winter multiplicativo
+mhte1 <- holt(bimb, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5) #Tendencia exponencial
+
+x11()
+plot(bimb, main="Bimbo pronosticos", xlab="", ylab="", type="o", col=1)
+lines(ms1$mean, col="blue")
+lines(mhle1$mean, col="orange")
+lines(mham1$mean, col="green")
+lines(mhwm1$mean, col="purple")
+lines(mhte1$mean, col="yellow")
+legend("topleft", lty=1, col=c(1,"blue","orange","green","purple","yellow"), 
+       legend = c("Datos","Promedio","Holt lineal exp","Holt amortiguado mult","Holt winter mult","T. Exponencial"))
+#El modelo que calcula los mejores pronosticos es el holt winter multiplicativo
+
+
+#Dólar-------------------
+d   <-read.csv(file.choose(), header=F)
+dol <-ts(d[1:130,2], start=c(2016,210), frequency = 252)
+dola<-ts(d[1:115,2],start=c(2016,210), frequency = 252)
+plot(dol, main="Precio cierre dolar Octubre 2016- abril 2017", xlab="Periodo", ylab="Precio", type="o")
+
+#Serie que muestra tendencia a la baja
+md11 <-rwf(dol, h=5, drift=T) #Metodo simple elegido: Deriva 
+md12 <- holt(dol, alpha=0.8, beta=0.2, initial="simple",  h=5) #Modelo Holt lineal simple
+md13 <- holt(dol, damped=T) #Holt Amortiguado Aditivo
+md14 <- hw(dol, h=5, seasonal="additive") #Holt winter Aditivo
+md15 <- holt(dol, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5) #Tendencia exponencial
+
+x11()
+plot(dol, main="Dolar", xlab="", ylab="", type="o", col=1)
+lines(md11$fitted, col="blue")
+lines(md12$fitted, col="orange")
+lines(md13$fitted, col="green")
+lines(md14$fitted, col="purple")
+lines(md15$fitted, col="yellow")
+legend("topleft", lty=1, col=c(1,"blue","orange","green","purple","yellow"), 
+       legend = c("Datos","Deriva","Holt lineal simple","Holt amortiguado ad","Holt winter ad","T. Exponencial"))
+#Modelo que se ajusta m´ás es el de Tendencia exponencial y holt winter aditivo
+
+acd1 <-accuracy(md11)
+MAEd1<-acd1[,3]
+
+acd2 <-accuracy(md12)
+MAEd2<-acd2[,3]
+
+acd3 <-accuracy(md13)
+MAEd3<-acd3[,3]
+
+acd4 <-accuracy(md14)
+MAEd4<-acd4[,3]
+
+acd5 <-accuracy(md15)
+MAEd5<-acd5[,3]
+
+Vecmaed<-c(MAEd1,MAEd2,MAEd3,MAEd4, MAEd5)
+which.min(Vecmaed) 
+#El metodo que resulta mas cercano a cero es el "3", Holt amortiguado aditivo.  
+#Mi analisis grafico indicaba que el que se ajustaba mejor era el de tendencia exponencial y el winter aditivo
+
+md21 <-rwf(dola, h=5, drift=T) 
+md22 <- holt(dola, alpha=0.8, beta=0.2, initial="simple",  h=5) 
+md23 <- holt(dola, damped=T) 
+md24 <- hw(dola, h=5, seasonal="additive") 
+md25 <- holt(dola, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5) 
+
+x11()
+plot(dola, main="Pronosticos del dolar", xlab="", ylab="", type="o", col=1)
+lines(md21$mean, col="blue")
+lines(md22$mean, col="orange")
+lines(md23$mean, col="green")
+lines(md24$mean, col="purple")
+lines(md25$mean, col="yellow")
+legend("topleft", lty=1, col=c(1,"blue","orange","green","purple","yellow"), 
+       legend = c("Datos","Deriva","Holt lineal simple","Holt amortiguado ad","Holt winter ad","T. Exponencial"))
+#Modelos que pronostican mejor son el de la deriva, holt amortiguado aditivo y winter aditivo
+
+#PIB---------------------
+p   <-read.csv(file.choose(), header=F)
+pib <-ts(p, start=2000, frequency=1)
+piba<-ts(p[1:12,], start= 2000, frequency =1)
+plot(pib, main="PIB anual 2000-2015", xlab="Periodo", ylab="Porcentaje", type="o")
+
+#Sin estacionalidad con tendencia a mantenerse igual o a la alza
+mp11 <-naive(pib, h=5) #Metodo simple elegido: Ingenuo
+mp12 <- holt(pib, alpha=0.8, beta=0.2, initial="simple",  h=5) #Modelo Holt lineal simple
+mp13 <- holt(pib, damped=T) #Holt Amortiguado Aditivo
+mp14 <- holt(pib, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5) #Tendencia exponencial
+
+x11()
+plot(pib, main="PIB anual", xlab="", ylab="", type="o", col=1)
+lines(mp11$fitted, col="blue")
+lines(mp12$fitted, col="orange")
+lines(mp13$fitted, col="green")
+lines(mp14$fitted, col="purple")
+legend("topleft", lty=1, col=c(1,"blue","orange","green","purple"), 
+       legend = c("Datos","Ingenuo","Holt lineal simple","Holt amortiguado ad","T. Exponencial"))
+#Modelo que se ajusta m´ás es el ingenuo
+
+acp1 <-accuracy(mp11)
+MAEp1<-acp1[,3]
+
+acp2 <-accuracy(mp12)
+MAEp2<-acp2[,3]
+
+acp3 <-accuracy(mp13)
+MAEp3<-acp3[,3]
+
+acp4 <-accuracy(mp14)
+MAEp4<-acp4[,3]
+
+Vecmaep<-c(MAEp1,MAEp2,MAEp3,MAEp4)
+which.min(Vecmaep) 
+#El metodo que resulta mas cercano a cero es el "3", Holt amortiguado aditivo.  
+#Mi analisis grafico indicaba que el que se ajustaba mejor era el Ingenuo
+
+mp21 <-naive(piba, h=5) 
+mp22 <- holt(piba, alpha=0.8, beta=0.2, initial="simple",  h=5) 
+mp23 <- holt(piba, damped=T) 
+mp24 <- holt(piba, alpha=0.8, beta=0.2, initial="simple", exponential= T, h=5)
+
+x11()
+plot(pib, col=1, main="Pronosticos del PIB anual")
+lines(mp21$mean, col="blue")
+lines(mp22$mean, col="orange")
+lines(mp23$mean, col="green")
+lines(mp24$mean, col="purple")
+legend("topleft", lty=1, col=c(1,"blue","orange","green","purple"), 
+       legend = c("Datos","Deriva","Holt lineal simple","Holt amortiguado ad","T. Exponencial"))
+
+#Modelo que pronostica mejor en este caso es el de la deriva
