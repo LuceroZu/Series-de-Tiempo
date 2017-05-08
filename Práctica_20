@@ -1,0 +1,15 @@
+########################## 08/05/17 ########################## 
+Ic <- read.csv(choose.files(), header = F)
+ica<- ts(Ic[,2], start =2016, frequency = 252)
+acf(ica) #No tiene ruido blanco porque estan relacionados los datos, volver la serie estacionaria.
+
+#Generando st con 252 del 2016 a 2017 con rango de 300-900
+aa<- sample(300:900,252)
+ta<- ts(aa, frequency = 252, start = 2016)
+acf(ta)
+
+###TAREA### Para el viernes 
+#Investigar como hacer la diferenciacion en una serie de tiempo con una serie de ICA, en R
+#1 fun ya hecha
+#2 crear una fn para hacer una diferenciacion (para primeros 10 datos)
+#Aplicar en ICA 
