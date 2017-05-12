@@ -1,0 +1,27 @@
+####Tarea
+#serie ica 
+
+Datos<-read.csv(file.choose(),header = F)
+ICA<-data.frame(Datos[,2])
+ICAts<-ts(ICA,frequency = 252,start = 2016)
+plot(ICAts)
+
+#Diferenciación con Función en R
+
+ICAd<-diff(ICAts)
+ICAd
+
+#Diferenciación con fórmula
+
+ICAfd<-data.frame(c(1:251)) #Hacemos un vector con 251 datos, puesto que en la
+                            #diferenciación se pierde un dato
+
+for(i in 1:251){            #Llenamos el vector creado con la fórmula de la 
+  a<-ICA[i+1,]              #diferenciación 
+  b<-ICA[i,]
+  ICAfd[i,]<-a-b  
+}
+
+ICAd<-as.data.frame(ICAd)   #convertimos la diferenciación hecha con la función
+                            #en R en data frame para poder hacer la comprobación
+ICAd-ICAfd #Podemos comprobar que la diferenciación es igual
