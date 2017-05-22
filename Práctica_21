@@ -1,0 +1,108 @@
+########################22-Mayo 2017#################################
+##################ARIMA#####
+require(foreign)
+require(fpp)
+
+###Bimbo ----
+
+bimbo  <- read.csv("C:\\Users\\Sala-D19\\Downloads\\bimbomx.csv", header=T)
+bimbst <-ts(bimbo, start=2016, frequency = 252)
+
+#1) Revisar si la st es estacionaria
+#Se aplica la prueba de raíz unitaria a traves de la funcion: adf.test y esperamos 
+#que el p-value sea menor a 0.05
+
+adf.test(bimbst) #pvalue de 0.4325
+
+dbimts <- diff(bimbst) #Aplicamos la 1era diferenciacion con la funcion diff debido 
+#que la serie original no es estacionaria
+
+adf.test(dbimts) #que nuestra serie en su primera diferenciacion se volvio en estacionaria
+
+#ARIMA(p,1,q) el "p" es de autoregresivo, "1" es del # de diferenciaciones que tuvimos que hacer para hacerla
+#estacionaria y "q" para las medias moviles
+
+
+acf(dbimts)#Encontrar valor de promedios moviles con la st diferenciada
+#"q" es el numero de lineas que sobrepasan las lineas punteadas (2)
+
+#ARIMA (p,1,2)
+
+#Para determinar el valor de "p" que se relaciona con los modelos autorregresivos se utiliza la fn pacf
+pacf(dbimts) #Igual se ve el # de lineas que sobrepasan la franja (1)
+
+#Por lo que se propondra un modelo ARIMA (1,1,2)
+
+modbim <- Arima(bimbst, order=c(1,1,2)) #se usa la st original y Arima con A mayusc
+modbim #El mas comparable es el AICc, el valor más pequeño es el mod + recomendable
+
+modbim1 <- Arima(bimbst, order=c(2,1,2))
+modbim1
+
+#Entre estos 2 modelos el mejor modelo seria modbim puesto que su AICc es menor.
+
+modres <- residuals(modbim) #Modelo residual
+Box.test(modres, lag=12, type = "Ljung-Box") #modelo y el retraso (no hay valor determinado)
+#P-value sugiere
+#Residuales son ruido blanco
+
+mod1 <- forecast(modbim, h=12)
+x11()
+plot(mod1, include = 18) #Include te da los ultimos 18 datos de la st 
+mod1
+summary(mod1)
+
+
+#######Funcion autoarima
+aa<- auto.arima(bimbst)
+aa   #Propone un modelo (1,1,1) 
+
+modres1 <- residuals(modbim1)
+Box.test(modres1, lag=12, type = "Ljung-Box")
+mod2 <- forecast(modbim1, h=12)
+x11()
+plot(mod2, include = 18)
+
+
+######------------------------------------------------------------------------------
+##Cemex ####
+cemex  <- read.csv("C:\\Users\\Sala-D19\\Downloads\\cemex.csv", header=T)
+cmexst <- ts(cemex, start=2016, frequency = 252)
+
+adf.test(cmexst) #pvalue de 0.8121
+
+dcmxst <- diff(cmexst) 
+adf.test(dcmxst) #ST en su primera diferenciacion se volvio en estacionaria
+#ARIMA(p,1,q)
+
+acf(dcmxst)#Encontrar valor de promedios moviles con la st diferenciada
+#"q" es el numero de lineas que sobrepasan las lineas punteadas (1)
+#ARIMA (p,1,1)
+
+pacf(dcmxst) #Igual se ve el # de lineas que sobrepasan la franja (1)
+
+#Por lo que se propondra un modelo ARIMA (1,1,1)
+
+modcm <- Arima(cmexst, order=c(1,1,1)) 
+modcm #AICc=184.24 
+
+modcm2 <- Arima(cmexst, order=c(2,1,2))
+modcm2 #AICc=188.05
+
+#Entre estos 2 modelos el mejor modelo seria modcm puesto que su AICc es menor.
+
+modresc1 <- residuals(modcm) 
+Box.test(modresc1, lag=12, type = "Ljung-Box")
+#P-value sugiere
+#Residuales son ruido blanco
+
+modc1 <- forecast(modcm, h=12)
+x11()
+plot(modc1, include = 18) #Include te da los ultimos 18 datos de la st 
+modc1
+summary(modc1)
+
+#######Funcion autoarima
+aacm<- auto.arima(cmexst)
+aa   #Propone un modelo (1,1,1) 
+#Resulto el primer modelo que ya se evaluo. 
