@@ -1,0 +1,50 @@
+############################ Práctica 22 ##########################
+amx  <- read.csv("C:\\Users\\Sala-D19\\Downloads\\AMX.csv", header=T)
+amst <-ts(amx, frequency = 252, start=2016 )
+
+##Acciones telmex
+##Autorregresivo----AR(p)
+zz <-arima(amst, order=c(1,0,0))
+zz
+#En este caso el modelo AR(1) se plantea de la siguiente manera
+#Yt=13.3425 (sale del intercept) + 0.9864 (Yt-1)+ et en este caso fi1=0.9864
+
+#Si tuvieramos un modelo autorregresivo de orden 2 se expresa como mod 
+#arima de la sig manera
+zz2 <-arima(amst, order=c(2,0,0))
+zz2
+#En este caso el modelo AR(2) se plantea de la siguiente manera
+#Yt= 13.2592 + 1.0602(Yt-1) - (0.0756)(Yt-2) +et... fi1=1.0602 y fi2=-0.0756
+
+#La fn. Arima da + AICc y la fn. arima solo da un aic 
+
+
+
+####Promedios moviles----MA(q)
+#A traves de un modelo ARIMA se expresa esta forma como lo podriamos representar
+yy<- arima(amst, order=c(0,0,1)) #MA(1)
+yy
+#Yt= 12.7409+ 0.8605(et-1) + et en este caso teta1=.8605
+
+yy2<- arima(amst, order = c(0,0,2)) #MA(2)
+yy2
+#Yt= 12.7481 + 1.339 (et-1) + 0.7423(et-2) + et-q 
+#Donde c=12.7481 teta1=1.339 teta2=.7423
+
+
+#### MODELOS ARIMA con diferenciacion ----
+#Yt= c + fi1(y't-1)+ ...+ fip(y't-p) + teta1(et-1) + teta2(et-2)+ tetap (et-p)+ et
+
+yy3<- arima(amst, order = c(2,3,2))
+yy3
+#No tiene constante (no hay intercept)
+#Yt=.0699 (y't-1)- .1531(y't-2) - .8362 (et-1) + .1378(et-2) + et
+
+
+####Practica por fila, GCARSO----
+gcar <-read.csv("C:\\Users\\Sala-D19\\Downloads\\gggg.csv", header=T)
+gcast <-ts(gcar,frequency = 252, start = 2016)
+#Arima(2,2,2)
+aa <-arima(gcast, order=c(2,2,2))
+aa
+#Yt= 0.6885 (y't-1) - 0.1429(y't-2) - 1.7753(et-1) + 0.7753(et-2) + et
